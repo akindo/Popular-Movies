@@ -5,7 +5,6 @@ import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,17 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        GridView gridview = (GridView) findViewById(R.id.movie_posters_gridview);
-        gridview.setAdapter(new ImageAdapter(this));
-
-        /*gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(HelloGridView.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
-            }*
-        });*/
     }
 
     @Override
