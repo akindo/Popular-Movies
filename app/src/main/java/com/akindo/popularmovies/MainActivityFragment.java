@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -33,10 +34,18 @@ import java.util.Collection;
 public class MainActivityFragment extends Fragment {
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
-    public static final String baseURL = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=";
+    public static final String baseURL = "http://api.themoviedb.org/3/discover/movie?" +
+            "sort_by=popularity.desc&api_key=";
     public static final String baseImageURL = "http://image.tmdb.org/t/p/";
-    public static final String[] imageSizes = {"w92", "w154", "w185", "w342", "w500", "w780", "original"};
+    public static final String[] imageSizes = {"w92", "w154", "w185", "w342", "w500", "w780",
+            "original"};
     public static final String phoneSize = "w185";
+
+    enum SortOrder {
+        MOST_POPULAR, HIGHEST_RATED
+    }
+
+    private SortOrder sortOrder = SortOrder.MOST_POPULAR;
 
     public static final int MAX_PAGES = 100;
     private boolean mIsLoading = false;
@@ -71,7 +80,10 @@ public class MainActivityFragment extends Fragment {
             String responseJsonStr = null;
 
             try {
-                final String API_BASE_URL = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc";
+                //final String API_BASE_URL = "http://api.themoviedb.org/3/discover/movie?" +
+                //        "sort_by=popularity.desc";
+                final String API_BASE_URL = "http://api.themoviedb.org/3/discover/movie?" +
+                        "sort_by=vote_average.desc";
                 final String API_PARAM_KEY = "api_key";
 
                 Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
@@ -104,7 +116,7 @@ public class MainActivityFragment extends Fragment {
                 }
 
                 if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
+                    // Stream was empty. No point in parsing.
                     return null;
                 }
 
@@ -163,5 +175,26 @@ public class MainActivityFragment extends Fragment {
             // Add new data from the server to the image adapter.
             mImageAdapter.addAll(results);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will automatically handle clicks on
+        // the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.most_popular) {
+            sortOrder = SortOrder.MOST_POPULAR;
+            Toast toast = Toast.makeText(getActivity(), "B-Most popular.", Toast.LENGTH_SHORT);
+            toast.show();
+            return true;
+        } else if (id == R.id.highest_rated) {
+            sortOrder = SortOrder.HIGHEST_RATED;
+            Toast toast = Toast.makeText(getActivity(), "B-Highest rated.", Toast.LENGTH_SHORT);
+            toast.show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

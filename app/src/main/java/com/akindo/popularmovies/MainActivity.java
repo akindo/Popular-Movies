@@ -3,6 +3,7 @@ package com.akindo.popularmovies;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -41,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
         // If The Movie DB API key is blank, show toast and then exit app.
         if (BuildConfig.THE_MOVIE_DB_API_KEY.isEmpty()) {
-            Toast toast = Toast.makeText(this, "Error, The Movie DB API key is blank, exiting app.", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this, "Error, The Movie DB API key is blank, exiting app.",
+                    Toast.LENGTH_SHORT);
             toast.show();
 
             final Handler handler = new Handler();
@@ -67,13 +69,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Handle action bar item clicks here. The action bar will automatically handle clicks on
+        // the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.most_popular) {
+            Toast toast = Toast.makeText(this, "Most popular.", Toast.LENGTH_SHORT);
+            toast.show();
+            Fragment frg = null;
+            frg = getSupportFragmentManager().findFragmentByTag("activity_main");
+            return true;
+        } else if (id == R.id.highest_rated) {
+            Toast toast = Toast.makeText(this, "Highest rated.", Toast.LENGTH_SHORT);
+            toast.show();
             return true;
         }
 

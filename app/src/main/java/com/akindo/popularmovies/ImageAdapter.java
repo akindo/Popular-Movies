@@ -67,8 +67,13 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             // If the view isn't recycled, initialise some attributes.
             imageView = new ImageView(mContext);
-            // Crop the images such that they take up the whole space, i. e.
-            // no white space around them.
+
+            //imageView.setLayoutParams(new GridView.LayoutParams(mWidth, mHeight));
+            //imageView.setLayoutParams(new GridView.LayoutParams(700, 700));
+            //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+            // Crop the images such that they take up the whole space, i. e. no white space around
+            // them.
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             // Recycle the view.
