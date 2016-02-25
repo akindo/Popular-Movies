@@ -30,6 +30,10 @@ public class ImageAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void clear() {
+        mMovies.clear();
+    }
+
     @Override
     public int getCount() {
         return mMovies.size();

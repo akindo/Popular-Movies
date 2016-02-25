@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,38 +59,143 @@ public class MainActivityFragment extends Fragment {
     public MainActivityFragment() {}
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Add this line in order for this fragment to handle menu events.
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         mImageAdapter = new ImageAdapter(getActivity());
-        GridView gridview = (GridView) rootView.findViewById(R.id.movie_posters_gridview);
-        gridview.setAdapter(mImageAdapter);
 
-        new FetchPopularMoviesTask().execute();
+//        GridView gridview = (GridView) rootView.findViewById(R.id.movie_posters_gridview);
+//        gridview.setAdapter(mImageAdapter);
+//
+//        new FetchPopularMoviesTask().execute();
+        initGrid(rootView);
 
         return rootView;
     }
 
-    public class FetchPopularMoviesTask extends AsyncTask<Void, Void, Collection<Movie>> {
+    private void initGrid(View view) {
+        GridView gridview = (GridView) view.findViewById(R.id.movie_posters_gridview);
+
+        if (gridview == null) {
+            return;
+        }
+
+        gridview.setAdapter(mImageAdapter);
+
+        gridview.setOnScrollListener(
+                new AbsListView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(AbsListView view, int scrollState) {}
+
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int
+                            visibleItemCount, int totalItemCount) {
+                        int lastInScreen = firstVisibleItem + visibleItemCount;
+                        if (lastInScreen == totalItemCount) {
+                            startLoading();
+                        }
+                    }
+                }
+
+        );
+    }
+
+    private void startLoading() {
+        if (mIsLoading) {
+            return;
+        }
+
+        if (mPagesLoaded >= MAX_PAGES) {
+            return;
+        }
+
+        mIsLoading = true;
+
+        if (mLoading != null) {
+            mLoading.setVisibility(View.VISIBLE);
+        }
+
+        new FetchPopularMoviesTask().execute(mPagesLoaded + 1);
+    }
+
+    private void stopLoading() {
+        if (!mIsLoading) {
+            return;
+        }
+
+        mIsLoading = false;
+
+        if (mLoading != null) {
+            mLoading.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will automatically handle clicks on
+        // the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.most_popular) {
+            sortOrder = SortOrder.MOST_POPULAR;
+            Toast toast = Toast.makeText(getActivity(), "Most popular.", Toast.LENGTH_SHORT);
+            toast.show();
+            new FetchPopularMoviesTask().execute();
+            return true;
+        } else if (id == R.id.highest_rated) {
+            sortOrder = SortOrder.HIGHEST_RATED;
+            Toast toast = Toast.makeText(getActivity(), "Highest rated.", Toast.LENGTH_SHORT);
+            toast.show();
+            new FetchPopularMoviesTask().execute();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public class FetchPopularMoviesTask extends AsyncTask<Integer, Void, Collection<Movie>> {
         private final String LOG_TAG = FetchPopularMoviesTask.class.getSimpleName();
 
         // Call The Movie DB API to get a JSON response of popular movies.
         @Override
-        protected Collection<Movie> doInBackground(Void... params) {
+        protected Collection<Movie> doInBackground(Integer... params) {
+            if (params.length == 0) {
+                return null;
+            }
+
+            int page = params[0];
+
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String responseJsonStr = null;
 
             try {
-                //final String API_BASE_URL = "http://api.themoviedb.org/3/discover/movie?" +
-                //        "sort_by=popularity.desc";
-                final String API_BASE_URL = "http://api.themoviedb.org/3/discover/movie?" +
-                        "sort_by=vote_average.desc";
-                final String API_PARAM_KEY = "api_key";
+                final String API_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+
+                String sortOrderString;
+                if (sortOrder == SortOrder.MOST_POPULAR) {
+                    sortOrderString = "popularity.desc";
+                } else {
+                    sortOrderString = "vote_average.desc";
+                }
 
                 Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                        .appendQueryParameter(API_PARAM_KEY, BuildConfig.THE_MOVIE_DB_API_KEY)
+                        .appendQueryParameter("sort_by", sortOrderString)
+                        .appendQueryParameter("page", String.valueOf(page))
+                        .appendQueryParameter("api_key", BuildConfig.THE_MOVIE_DB_API_KEY)
                         .build();
 
                 Log.d(LOG_TAG, "The Movie DB query URI: " + builtUri.toString());
@@ -169,32 +277,20 @@ public class MainActivityFragment extends Fragment {
                         "Error fetching movies from The Movie DB.",
                         Toast.LENGTH_LONG
                 ).show();
+
+                stopLoading();
                 return;
             }
+
+            mPagesLoaded++;
+
+            stopLoading();
+//            if (mImageAdapter.getCount() > 0) {
+//                mImageAdapter.clear();
+//            }
 
             // Add new data from the server to the image adapter.
             mImageAdapter.addAll(results);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will automatically handle clicks on
-        // the Home/Up button, so long as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.most_popular) {
-            sortOrder = SortOrder.MOST_POPULAR;
-            Toast toast = Toast.makeText(getActivity(), "B-Most popular.", Toast.LENGTH_SHORT);
-            toast.show();
-            return true;
-        } else if (id == R.id.highest_rated) {
-            sortOrder = SortOrder.HIGHEST_RATED;
-            Toast toast = Toast.makeText(getActivity(), "B-Highest rated.", Toast.LENGTH_SHORT);
-            toast.show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

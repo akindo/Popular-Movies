@@ -3,11 +3,8 @@ package com.akindo.popularmovies;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.squareup.leakcanary.LeakCanary;
@@ -60,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -86,6 +83,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }
 

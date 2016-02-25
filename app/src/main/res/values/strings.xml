@@ -3,4 +3,5 @@
     <string name="most_popular">Sort by most popular</string>
     <string name="highest_rated">Sort by highest rated</string>
     <string name="the_movie_db_poster_size">w500</string>
+    <string name="msg_loading">loading...</string>
 </resources>
