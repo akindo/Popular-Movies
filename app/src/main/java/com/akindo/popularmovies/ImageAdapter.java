@@ -71,14 +71,14 @@ public class ImageAdapter extends BaseAdapter {
             return null;
         }
 
-        ImageView imageView;
+        LinearLayout linearLayout;
 
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             //imageView = new ImageView(mContext);
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-            LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.movie_poster_image_view, null);
-            imageView = (ImageView) linearLayout.findViewById(R.id.poster_view);
+            linearLayout = (LinearLayout) inflater.inflate(R.layout.movie_poster_image_view, parent, false);
+
 
 //            imageView.setLayoutParams(new GridView.LayoutParams(Math.round(
 //                    mContext.getResources().getDimension(R.dimen.poster_height)),
@@ -88,16 +88,19 @@ public class ImageAdapter extends BaseAdapter {
             //imageView.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 750));
             //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
-            imageView = (ImageView) convertView;
+            linearLayout = (LinearLayout) convertView;
         }
+
+        ImageView imageView = (ImageView) linearLayout.findViewById(R.id.poster_view);
 
         Uri posterUri = movie.buildPosterUri(mContext.getString(R.string.the_movie_db_poster_size));
         Log.d(LOG_TAG, posterUri.toString());
 
         Picasso.with(mContext)
                 .load(posterUri)
+                .resize(500, 750)
                 .into(imageView);
 
-        return imageView;
+        return linearLayout;
     }
 }
