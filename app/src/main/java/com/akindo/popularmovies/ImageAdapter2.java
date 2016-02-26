@@ -1,14 +1,13 @@
 package com.akindo.popularmovies;
 
+
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.akindo.popularmovies.movie.Movie;
 import com.squareup.picasso.Picasso;
@@ -16,27 +15,22 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * An adapter to hold movie poster images.
- */
-public class ImageAdapter extends BaseAdapter {
-
-    private final String LOG_TAG = ImageAdapter.class.getSimpleName();
+public class ImageAdapter2 extends BaseAdapter {
     private Context mContext;
     private final ArrayList<Movie> mMovies;
+    private final int mHeight;
+    private final int mWidth;
 
-    public ImageAdapter(Context c) {
+    public ImageAdapter2(Context c) {
         mContext = c;
         mMovies = new ArrayList<>();
+        mHeight = Math.round(mContext.getResources().getDimension(R.dimen.poster_height));
+        mWidth = Math.round(mContext.getResources().getDimension(R.dimen.poster_width));
     }
 
-    public void addAll(Collection<Movie> movies) {
-        mMovies.addAll(movies);
+    public void addAll(Collection<Movie> xs) {
+        mMovies.addAll(xs);
         notifyDataSetChanged();
-    }
-
-    public void clear() {
-        mMovies.clear();
     }
 
     @Override
@@ -55,7 +49,6 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         Movie movie = getItem(position);
-
         if (movie == null) {
             return -1L;
         }
@@ -66,34 +59,21 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Movie movie = getItem(position);
-
         if (movie == null) {
             return null;
         }
 
         ImageView imageView;
-
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
-            //imageView = new ImageView(mContext);
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-            LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.movie_poster_image_view, null);
-            imageView = (ImageView) linearLayout.findViewById(R.id.poster_view);
-
-//            imageView.setLayoutParams(new GridView.LayoutParams(Math.round(
-//                    mContext.getResources().getDimension(R.dimen.poster_height)),
-//                    Math.round(mContext.getResources().getDimension(R.dimen.poster_width))));
-
-
-            //imageView.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 750));
-            //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView = new ImageView(mContext);
+            imageView.setLayoutParams(new GridView.LayoutParams(mWidth, mHeight));
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         } else {
             imageView = (ImageView) convertView;
         }
 
-        Uri posterUri = movie.buildPosterUri(mContext.getString(R.string.the_movie_db_poster_size));
-        Log.d(LOG_TAG, posterUri.toString());
-
+        Uri posterUri = movie.buildPosterUri(mContext.getString(R.string.api_poster_default_size));
         Picasso.with(mContext)
                 .load(posterUri)
                 .into(imageView);

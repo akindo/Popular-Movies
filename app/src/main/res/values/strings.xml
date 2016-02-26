@@ -4,4 +4,5 @@
     <string name="highest_rated">Sort by highest rated</string>
     <string name="the_movie_db_poster_size">w500</string>
     <string name="msg_loading">loading...</string>
+    <string name="api_poster_default_size">w154</string>
 </resources>

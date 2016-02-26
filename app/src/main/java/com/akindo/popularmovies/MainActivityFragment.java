@@ -37,13 +37,6 @@ import java.util.Collection;
 public class MainActivityFragment extends Fragment {
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
-    public static final String baseURL = "http://api.themoviedb.org/3/discover/movie?" +
-            "sort_by=popularity.desc&api_key=";
-    public static final String baseImageURL = "http://image.tmdb.org/t/p/";
-    public static final String[] imageSizes = {"w92", "w154", "w185", "w342", "w500", "w780",
-            "original"};
-    public static final String phoneSize = "w185";
-
     enum SortOrder {
         MOST_POPULAR, HIGHEST_RATED
     }
@@ -68,17 +61,13 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
         mImageAdapter = new ImageAdapter(getActivity());
+        mLoading = (TextView) view.findViewById(R.id.loading);
+        initGrid(view);
+        startLoading();
 
-//        GridView gridview = (GridView) rootView.findViewById(R.id.movie_posters_gridview);
-//        gridview.setAdapter(mImageAdapter);
-//
-//        new FetchPopularMoviesTask().execute();
-        initGrid(rootView);
-
-        return rootView;
+        return view;
     }
 
     private void initGrid(View view) {
@@ -93,18 +82,18 @@ public class MainActivityFragment extends Fragment {
         gridview.setOnScrollListener(
                 new AbsListView.OnScrollListener() {
                     @Override
-                    public void onScrollStateChanged(AbsListView view, int scrollState) {}
+                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                    }
 
                     @Override
-                    public void onScroll(AbsListView view, int firstVisibleItem, int
-                            visibleItemCount, int totalItemCount) {
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                         int lastInScreen = firstVisibleItem + visibleItemCount;
                         if (lastInScreen == totalItemCount) {
                             startLoading();
                         }
                     }
                 }
-
         );
     }
 
@@ -151,13 +140,13 @@ public class MainActivityFragment extends Fragment {
 
         if (id == R.id.most_popular) {
             sortOrder = SortOrder.MOST_POPULAR;
-            Toast toast = Toast.makeText(getActivity(), "Most popular.", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getActivity(), "B-Most popular.", Toast.LENGTH_SHORT);
             toast.show();
             new FetchPopularMoviesTask().execute();
             return true;
         } else if (id == R.id.highest_rated) {
             sortOrder = SortOrder.HIGHEST_RATED;
-            Toast toast = Toast.makeText(getActivity(), "Highest rated.", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getActivity(), "B-Highest rated.", Toast.LENGTH_SHORT);
             toast.show();
             new FetchPopularMoviesTask().execute();
             return true;
@@ -177,7 +166,6 @@ public class MainActivityFragment extends Fragment {
             }
 
             int page = params[0];
-
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
             String responseJsonStr = null;
@@ -277,18 +265,11 @@ public class MainActivityFragment extends Fragment {
                         "Error fetching movies from The Movie DB.",
                         Toast.LENGTH_LONG
                 ).show();
-
-                stopLoading();
                 return;
             }
 
             mPagesLoaded++;
-
             stopLoading();
-//            if (mImageAdapter.getCount() > 0) {
-//                mImageAdapter.clear();
-//            }
-
             // Add new data from the server to the image adapter.
             mImageAdapter.addAll(results);
         }

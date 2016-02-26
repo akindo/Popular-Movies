@@ -1,31 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:showIn="@layout/activity_main"
+                tools:context=".MainActivityFragment">
+
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/movie_posters_gridview"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:columnWidth="0dp"
+              android:numColumns="2"
+              android:verticalSpacing="0dp"
+              android:horizontalSpacing="0dp"
+              android:stretchMode="columnWidth"
+              android:gravity="center"
+              tools:context=".MainActivityFragment">
+
+    </GridView>
 
 
-    <GridView
-        android:id="@+id/grid_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="@dimen/poster_width"
-        android:gravity="center"
-
-        android:numColumns="auto_fit"
-
-        android:paddingBottom="@dimen/poster_padding"
-
-        android:paddingTop="@dimen/poster_padding"
-        android:stretchMode="spacingWidthUniform"
-
-        android:textAlignment="center"
-
-        android:verticalSpacing="@dimen/poster_padding"
-        tools:context=".MainActivityFragment"
-        />
 
     <TextView
         android:id="@+id/loading"
@@ -43,14 +37,4 @@
         android:gravity="center"
         android:paddingTop="@dimen/abc_dialog_padding_top_material"
         android:paddingBottom="@dimen/abc_dialog_padding_top_material" />
-
-    <!--
-android:horizontalSpacing="@dimen/poster_padding"
-android:paddingLeft="@dimen/activity_horizontal_margin"
-android:paddingRight="@dimen/activity_horizontal_margin"
-android:paddingTop="@dimen/activity_vertical_margin"
-android:paddingBottom="@dimen/activity_vertical_margin"
--->
-
-
 </RelativeLayout>
