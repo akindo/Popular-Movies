@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,13 +40,16 @@ import java.util.Collection;
  * Fragment displaying a list of popular movies.
  */
 public class MainActivityFragment extends Fragment {
+
     private final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
-    enum SortOrder {
-        MOST_POPULAR, HIGHEST_RATED
-    }
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({MOST_POPULAR, HIGHEST_RATED})
+    public @interface SortOrder {}
 
-    private SortOrder sortOrder = SortOrder.MOST_POPULAR;
+    public static final int MOST_POPULAR = 0;
+    public static final int HIGHEST_RATED = 1;
+    @SortOrder int sortOrder = MOST_POPULAR;
 
     public static final int MAX_PAGES = 100;
     private boolean mIsLoading = false;
@@ -56,7 +62,6 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
     }
 
@@ -96,8 +101,8 @@ public class MainActivityFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 intent.putExtra(Movie.EXTRA_MOVIE, movie.toBundle());
-                //getActivity().startActivity(intent);
-                startActivity(intent);
+                getActivity().startActivity(intent);
+                //startActivity(intent);
             }
         });
 
@@ -161,16 +166,16 @@ public class MainActivityFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.most_popular) {
-            sortOrder = SortOrder.MOST_POPULAR;
-            Toast toast = Toast.makeText(getActivity(), "B-Most popular.", Toast.LENGTH_SHORT);
-            toast.show();
-            new FetchPopularMoviesTask().execute();
+            sortOrder = MOST_POPULAR;
+            mImageAdapter.clear();
+            mPagesLoaded = 0;
+            new FetchPopularMoviesTask().execute(mPagesLoaded + 1);
             return true;
         } else if (id == R.id.highest_rated) {
-            sortOrder = SortOrder.HIGHEST_RATED;
-            Toast toast = Toast.makeText(getActivity(), "B-Highest rated.", Toast.LENGTH_SHORT);
-            toast.show();
-            new FetchPopularMoviesTask().execute();
+            sortOrder = HIGHEST_RATED;
+            mImageAdapter.clear();
+            mPagesLoaded = 0;
+            startLoading();
             return true;
         }
 
@@ -183,6 +188,9 @@ public class MainActivityFragment extends Fragment {
         // Call The Movie DB API to get a JSON response of popular movies.
         @Override
         protected Collection<Movie> doInBackground(Integer... params) {
+            if(android.os.Debug.isDebuggerConnected())
+                android.os.Debug.waitForDebugger();
+
             if (params.length == 0) {
                 return null;
             }
@@ -193,17 +201,17 @@ public class MainActivityFragment extends Fragment {
             String responseJsonStr = null;
 
             try {
-                final String API_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+                String API_BASE_URL = "http://api.themoviedb.org/3/movie/";
 
                 String sortOrderString;
-                if (sortOrder == SortOrder.MOST_POPULAR) {
-                    sortOrderString = "popularity.desc";
+                if (sortOrder == MOST_POPULAR) {
+                    sortOrderString = "popular";
                 } else {
-                    sortOrderString = "vote_average.desc";
+                    sortOrderString = "top_rated";
                 }
 
                 Uri builtUri = Uri.parse(API_BASE_URL).buildUpon()
-                        .appendQueryParameter("sort_by", sortOrderString)
+                        .appendPath(sortOrderString)
                         .appendQueryParameter("page", String.valueOf(page))
                         .appendQueryParameter("api_key", BuildConfig.THE_MOVIE_DB_API_KEY)
                         .build();

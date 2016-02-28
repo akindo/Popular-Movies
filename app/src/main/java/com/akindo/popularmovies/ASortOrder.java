@@ -23,8 +23,8 @@ public abstract class ASortOrder {
 
     //Decorate the target methods with the annotation
     @SortOrder
-    public abstract int getNavigationMode();
+    public abstract int getSortOrder();
 
     //Attach the annotation
-    public abstract void setNavigationMode(@SortOrder int mode);
+    public abstract void setSortOrder(@SortOrder int mode);
 }
