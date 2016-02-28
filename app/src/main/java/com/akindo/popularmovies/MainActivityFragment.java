@@ -1,5 +1,6 @@
 package com.akindo.popularmovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,6 +80,26 @@ public class MainActivityFragment extends Fragment {
         }
 
         gridview.setAdapter(mImageAdapter);
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent,
+                                    View v,
+                                    int position,
+                                    long id) {
+
+                ImageAdapter adapter = (ImageAdapter) parent.getAdapter();
+                Movie movie = adapter.getItem(position);
+
+                if (movie == null) {
+                    return;
+                }
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra(Movie.EXTRA_MOVIE, movie.toBundle());
+                //getActivity().startActivity(intent);
+                startActivity(intent);
+            }
+        });
 
         gridview.setOnScrollListener(
                 new AbsListView.OnScrollListener() {

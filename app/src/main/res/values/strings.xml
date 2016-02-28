@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="title_activity_detail">Details</string>
+
     <string name="most_popular">Sort by most popular</string>
     <string name="highest_rated">Sort by highest rated</string>
     <string name="the_movie_db_poster_size">w500</string>
     <string name="msg_loading">loading...</string>
     <string name="api_poster_default_size">w154</string>
+    <string name="label_movie_release_date">Release date:</string>
 </resources>

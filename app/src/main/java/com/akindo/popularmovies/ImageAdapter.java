@@ -74,19 +74,8 @@ public class ImageAdapter extends BaseAdapter {
         LinearLayout linearLayout;
 
         if (convertView == null) {
-            // if it's not recycled, initialize some attributes
-            //imageView = new ImageView(mContext);
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
             linearLayout = (LinearLayout) inflater.inflate(R.layout.movie_poster_image_view, parent, false);
-
-
-//            imageView.setLayoutParams(new GridView.LayoutParams(Math.round(
-//                    mContext.getResources().getDimension(R.dimen.poster_height)),
-//                    Math.round(mContext.getResources().getDimension(R.dimen.poster_width))));
-
-
-            //imageView.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 750));
-            //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             linearLayout = (LinearLayout) convertView;
         }
@@ -98,7 +87,6 @@ public class ImageAdapter extends BaseAdapter {
 
         Picasso.with(mContext)
                 .load(posterUri)
-                .resize(500, 750)
                 .into(imageView);
 
         return linearLayout;

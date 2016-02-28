@@ -1,6 +1,7 @@
 package com.akindo.popularmovies.movie;
 
 import android.net.Uri;
+import android.os.Bundle;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +10,8 @@ import org.json.JSONObject;
  * Represents a movie returned from themoviedb.org.
  */
 public class Movie {
+
+    public static final String EXTRA_MOVIE = "io.maritimus.sofaexpert.EXTRA_MOVIE";
     public static final String ID = "id";
     public static final String TITLE = "title";
     public static final String OVERVIEW = "overview";
@@ -36,6 +39,37 @@ public class Movie {
         this.release_date = release_date;
     }
 
+    public Movie(Bundle bundle) {
+        this(
+                bundle.getLong(ID),
+                bundle.getString(TITLE),
+                bundle.getString(OVERVIEW),
+                bundle.getString(POSTER_PATH),
+                bundle.getDouble(VOTE_AVERAGE),
+                bundle.getLong(VOTE_COUNT),
+                bundle.getString(RELEASE_DATE)
+        );
+    }
+    
+    public String getRating() {
+        return "" + vote_average + " / 10";
+    }
+    
+    public Bundle toBundle() {
+        Bundle bundle = new Bundle();
+
+        bundle.putLong(ID, id);
+        bundle.putString(TITLE, title);
+        bundle.putString(OVERVIEW, overview);
+        bundle.putString(POSTER_PATH, poster_path);
+        bundle.putDouble(VOTE_AVERAGE, vote_average);
+        bundle.putLong(VOTE_COUNT, vote_count);
+        bundle.putString(RELEASE_DATE, release_date);
+
+
+        return bundle;
+    }
+    
     public static Movie fromJson(JSONObject jsonObject) throws JSONException {
         return new Movie(
                 jsonObject.getLong(ID),

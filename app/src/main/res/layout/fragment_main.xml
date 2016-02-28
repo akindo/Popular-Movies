@@ -15,11 +15,7 @@
               android:horizontalSpacing="0dp"
               android:stretchMode="columnWidth"
               android:gravity="center"
-              tools:context=".MainActivityFragment">
-
-    </GridView>
-
-
+              tools:context=".MainActivityFragment"/>
 
     <TextView
         android:id="@+id/loading"
