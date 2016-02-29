@@ -30,6 +30,7 @@ Thumbs.db
 .idea
 .gradle
 build/
+captures/
 
 #NDK
 obj/

@@ -89,6 +89,15 @@ public class ImageAdapter extends BaseAdapter {
                 .load(posterUri)
                 .into(imageView);
 
+//        int width= mContext.getResources().getDisplayMetrics().widthPixels;
+//        com.squareup.picasso.Picasso
+//                .with(mContext)
+//                .load("some url")
+//                .centerCrop().resize(width/2,width/2)
+//                .error(R.drawable.sample_0)
+//                .placeholder(R.drawable.sample_0)
+//                .into(imageView);
+
         return linearLayout;
     }
 }
