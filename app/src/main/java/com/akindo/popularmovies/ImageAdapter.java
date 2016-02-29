@@ -71,33 +71,28 @@ public class ImageAdapter extends BaseAdapter {
             return null;
         }
 
-        LinearLayout linearLayout;
+        LinearLayout relativeLayout;
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-            linearLayout = (LinearLayout) inflater.inflate(R.layout.movie_poster_image_view, parent, false);
+            relativeLayout = (LinearLayout) inflater.inflate(R.layout.movie_poster_image_view, parent, false);
         } else {
-            linearLayout = (LinearLayout) convertView;
+            relativeLayout = (LinearLayout) convertView;
         }
 
-        ImageView imageView = (ImageView) linearLayout.findViewById(R.id.poster_view);
+        ImageView imageView = (ImageView) relativeLayout.findViewById(R.id.poster_view);
 
         Uri posterUri = movie.buildPosterUri(mContext.getString(R.string.the_movie_db_poster_size));
         Log.d(LOG_TAG, posterUri.toString());
 
         Picasso.with(mContext)
                 .load(posterUri)
+                // Need the placeholder to prevent the following issue:
+                // https://github.com/square/picasso/issues/457
+                .placeholder(R.drawable.white_placeholder)
+                .error(R.drawable.white_placeholder)
                 .into(imageView);
 
-//        int width= mContext.getResources().getDisplayMetrics().widthPixels;
-//        com.squareup.picasso.Picasso
-//                .with(mContext)
-//                .load("some url")
-//                .centerCrop().resize(width/2,width/2)
-//                .error(R.drawable.sample_0)
-//                .placeholder(R.drawable.sample_0)
-//                .into(imageView);
-
-        return linearLayout;
+        return relativeLayout;
     }
 }
