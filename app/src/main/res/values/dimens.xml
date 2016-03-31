@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="poster_width">154dp</dimen>
+    <dimen name="poster_width">200dp</dimen>
     <dimen name="poster_height_old">231dp</dimen>
     <dimen name="poster_height">750dp</dimen>
     <dimen name="poster_padding">4dp</dimen>
